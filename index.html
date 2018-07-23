@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html ng-app="exampleApp">
+<head>
+    <title>Services and Modules</title>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="ngmodules/angular.js"></script>
+    <script src="directives/directives.js"></script>
+    <script src="services/services.js"></script>
+
+    <script>
+        angular.module("exampleApp",
+            [
+                "customDirectives",
+                "customServices",
+            ])
+            .config(function (proLogServiceProvider) {
+                proLogServiceProvider.messageCountEnabled(false)
+                    .debugEnabled(true);
+                console.log("Settings: debug, " + proLogServiceProvider.debugEnabled() + ": count, " + proLogServiceProvider.messageCountEnabled());
+            })
+            .controller("defaultCtrl", function ($scope,
+                                                 logService,
+                                                 errorLogService,
+                                                 proLogService,) {
+                $scope.data = {
+                    cities: ["London", "Toronto", "Seoul"],
+                    totalClicks: 0
+                };
+
+                $scope.$watch("data.totalClicks", function (newVal) {
+                    //errorLogService.log("Button totalClicks: ", newVal);
+                    proLogService.log("Button totalClicks: ", newVal);
+                })
+            })
+            // .directive("triButtons", function () {
+            //     return {
+            //         scope: {
+            //             counter: "=counter",
+            //         },
+            //         link: function (scope, element, attrs) {
+            //             element.on("click", function (event) {
+            //                 console.log(event.target.innerText + " clicked!");
+            //                 scope.$apply(function () {
+            //                     scope.counter++;
+            //                 })
+            //             })
+            //         }
+            //     }
+            // });
+    </script>
+
+</head>
+    <div ng-controller="defaultCtrl" class="container">
+        <div class="well">
+            <div tri-buttons
+                 counter="data.totalClicks"
+                 source="data.cities"
+                 class="btn-group">
+                <button class="btn btn-default"
+                        ng-repeat="city in data.cities">
+                    {{ city }}
+                </button>
+            </div>
+            <h5>TotalClicks: {{ data.totalClicks }}</h5>
+        </div>
+    </div>
+</html>
